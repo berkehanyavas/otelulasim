@@ -1,0 +1,124 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class='row'>
+
+    <div class='container'>
+        <div class='row'>
+            <div class='col-lg-10'>
+                <h3>{{request.user.userprofile.otel.name}} - Ulaşım İstekleri</h3>
+            </div>
+            <div class='col-lg-2'>
+                <a href="/job/ekle" class='btn btn-secondary'>Ulaşım Ekle</a>
+            </div>
+        </div>
+
+        <br>
+
+        <table class="table" id='tabble'>
+        <thead>
+            <tr>
+                <th scope="col">Yolcu Adı</th>
+                <th scope="col">Nereden (From)</th>
+                <th scope="col">Nereye (To)</th>
+                <th scope="col">Tarih (Date)</th>
+                <th scope="col">Saat (Time)</th>
+                <th scope="col">Yolcu Sayısı (Passenger Count)</th>
+                <th scope="col">Ücret (Price)</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        {% for job in jobs %}
+            <tr>
+                <td scope="row"><a href="/job/{{job.id}}" onclick="window.open(this.href, '_blank', 'width=1080,height=730'); return false;">{{job.name}} {{job.surname}}</a></td>
+                <td>{{job.location}}</td>
+                <td>{{job.destination}}</td>
+                <td>{{job.date}}</td>
+                <td>{{job.time}}</td>
+                <td>{{job.passenger_count}}</td>
+                <td>{{job.price}} {{job.currency}}</td>
+            </tr>
+        
+        {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th scope="col">Yolcu Adı</th>
+                <th scope="col">Nereden (From)</th>
+                <th scope="col">Nereye (To)</th>
+                <th scope="col">Tarih (Date)</th>
+                <th scope="col">Saat (Time)</th>
+                <th scope="col">Yolcu Sayısı (Passenger Count)</th>
+                <th scope="col">Ücret (Price)</th>
+            </tr>
+        </tfoot>
+        </table>
+
+    </div>
+
+</div>
+
+<script>
+
+
+$(document).ready(function() {
+    var table = $("#tabble").DataTable({
+        responsive: true,
+        lengthChange: true,
+        autoWidth: true,
+        dom: 'Blfrtip',  // 'B' butonları gösterecek
+        lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+        buttons: [
+            "copy",   // Kopyala butonu
+            "excel",  // Excel butonu
+            "print"   // Yazdır butonu
+        ],
+        initComplete: function () {
+            this.api()
+                .columns(5)
+                .every(function () {
+                    var column = this;
+                    var select = $('<select><option value="">Filtrelemek için seçiniz.</option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                            column.search(val ? '^' + val + '$' : '', true, false).draw();
+                        });
+                    column
+                        .data()
+                        .unique()
+                        .sort()
+                        .each(function (d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>');
+                        });
+                });
+            this.api()
+                .columns(7)
+                .every(function () {
+                    var column = this;
+                    var select = $('<select><option value="">Filtrelemek için seçiniz.</option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                            column.search(val ? '^' + val + '$' : '', true, false).draw();
+                        });
+                    column
+                        .data()
+                        .unique()
+                        .sort()
+                        .each(function (d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>');
+                        });
+                });
+        },
+    });
+
+    // Butonların konumunu ayarlayın
+    table.buttons().container().appendTo('#yolculukListesi_wrapper .col-md-6:eq(0)');
+});
+</script>
+
+
+{% endblock body %}

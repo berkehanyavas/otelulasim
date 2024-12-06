@@ -1,0 +1,299 @@
+{% extends "layout.html" %} {% block body %} {% load crispy_forms_tags %}
+
+<div class="row">
+  <div class="col-md-6 offset-md-3">
+    <h3>Görev Ekle</h3>
+    <br />
+    <form method="post">
+      {% csrf_token %} 
+      {% comment %} {{form | crispy}} {% endcomment %} 
+      {% comment %} <br /> {% endcomment %}
+      <div class='row'>
+        <div id="div_id_location" class="form-group col-lg-6">
+          <label for="id_location" class="requiredField">
+            Nereden (From)<span class="asteriskField">*</span>
+          </label>
+          <div>
+            <input
+              type="text"
+              name="location"
+              maxlength="120"
+              class="textinput form-control"
+              required
+              id="id_location"
+            />
+          </div>
+        </div>
+        <div id="div_id_destination" class="form-group col-lg-6">
+          <label for="id_destination" class="requiredField">
+            Nereye (To)<span class="asteriskField">*</span>
+          </label>
+          <div>
+            <input
+              type="text"
+              name="destination"
+              maxlength="120"
+              class="textinput form-control"
+              required
+              id="id_destination"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div id='name_surname'>
+        <div class='row'>
+          <div id="div_id_name" class="form-group col-lg-6">
+            <label for="id_name" class="requiredField">
+              Yolcu Adı (Passenger Name)<span class="asteriskField">*</span>
+            </label>
+            <div>
+              <input
+                type="text"
+                name="name"
+                maxlength="80"
+                class="textinput form-control"
+                required
+                id="id_name"
+              />
+            </div>
+          </div>
+          <div id="div_id_surname" class="form-group col-lg-6">
+            <label for="id_surname" class="requiredField">
+              Yolcu Soyadı (Passenger Surname)<span class="asteriskField">*</span>
+            </label>
+            <div>
+              <input
+                type="text"
+                name="surname"
+                maxlength="80"
+                class="textinput form-control"
+                required
+                id="id_surname"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class='row'>
+        <div id="div_id_passenger_count" class="form-group col-lg-6">
+          <label for="id_passenger_count" class="requiredField">
+            Yolcu Sayısı (Passenger Count)<span class="asteriskField">*</span>
+          </label>
+          <div>
+            <select
+              name="passenger_count"
+              class="select form-control"
+              id="id_passenger_count"
+              onchange="addRows(); updatePrice();"
+            >
+              <option value="1" selected>1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+              <option value="13">13</option>
+              <option value="14">14</option>
+              <option value="15">15</option>
+            </select>
+          </div>
+        </div>
+
+        <div class='form-group col-lg-6'>
+          <label class="requiredField" style='color:red;'>
+            Fiyat (Price)
+          </label>
+          <div>
+            <input
+              type="text"
+              name="price"
+              maxlength="13"
+              class="textinput form-control"
+              id="id_price"
+              disabled
+              value='0,00 {{price.currency}}'
+            />
+            <input
+              type="hidden"
+              name='hidden_price'
+              id='id_hidden_price'
+            />
+            <input 
+              type="hidden"
+              name='hidden_currency'
+              id='id_hidden_currency'
+            />
+          </div>
+        </div>
+
+      </div>
+
+      <div class='row'>
+        <div id="div_id_phone" class="form-group col-lg-6">
+          <label for="id_phone" class="">
+            Yolcu Telefon Numarası (Passenger Phone Number)
+          </label>
+          <div>
+            <input
+              type="text"
+              name="phone"
+              maxlength="13"
+              class="textinput form-control"
+              id="id_phone"
+            />
+          </div>
+        </div>
+        <div id="div_id_email" class="form-group col-lg-6">
+          <label for="id_email" class="">
+            Yolcu Email Adresi (Passenger Email Address)
+          </label>
+          <div>
+            <input
+              type="email"
+              name="email"
+              maxlength="254"
+              class="emailinput form-control"
+              id="id_email"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class='row'>
+        <div id="div_id_date" class="form-group col-lg-6">
+          <label for="id_date" class="requiredField">
+            Tarih (Date)<span class="asteriskField">*</span>
+          </label>
+          <div>
+            <input
+              type="date"
+              name="date"
+              class="dateinput form-control"
+              required
+              id="id_date"
+            />
+          </div>
+        </div>
+        <div id="div_id_time" class="form-group col-lg-6">
+          <label for="id_time" class="requiredField">
+            Saat (Time)<span class="asteriskField">*</span>
+          </label>
+          <div>
+            <input
+              type="time"
+              name="time"
+              class="timeinput form-control"
+              required
+              id="id_time"
+            />
+          </div>
+        </div>
+      </div>
+      <div id="div_id_flight_code" class="form-group">
+        <label for="id_flight_code" class="requiredField">
+          Uçuş Kodu (Flight Code)<span class="asteriskField">*</span>
+        </label>
+        <div>
+          <input
+            type="text"
+            name="flight_code"
+            maxlength="25"
+            class="textinput form-control"
+            required
+            id="id_flight_code"
+          />
+        </div>
+      </div>
+
+      <br />
+      <button type="submit" class="btn btn-primary">Ekle</button>
+    </form>
+  </div>
+</div>
+
+<script>
+// let rowCounter = 1; // Başlangıç için bir sayaç oluşturuyoruz
+
+function addRows() {
+    const numRows = parseInt(document.getElementById('id_passenger_count').value); // Seçilen değeri al ve sayıya dönüştür
+    const container = document.getElementById('name_surname'); // Satırların ekleneceği container
+    const existingRows = container.querySelectorAll('.row'); // Mevcut satırları al
+    const currentRowCount = existingRows.length; // Şu anki satır sayısını al
+
+    // Eksik olan satır sayısı
+    const rowsToAdd = numRows - currentRowCount;
+
+    // Eğer eksik satır varsa, ekle
+    for (let i = 0; i < rowsToAdd; i++) {
+        const initialRow = container.querySelector('.row'); // İlk satırı referans al
+        const newRow = initialRow.cloneNode(true); // İlk row'u çoğalt
+        
+        // Yeni row'daki input alanlarını temizle
+        newRow.querySelectorAll('input').forEach(input => {
+            input.value = ''; // Her inputun değerini temizle
+        });
+
+        // Yeni satırdaki 'name' attribute'unu değiştirme
+        newRow.querySelectorAll('[name]').forEach(element => {
+            // Örneğin "name" -> "name_1" şeklinde name attribute'unu oluşturuyoruz
+            const newName = `${element.name}_passenger`;
+            element.name = newName; // Yeni name'i ata
+        });
+
+        // Yeni row'u container'a ekle
+        container.appendChild(newRow);
+        
+        // Sayaç artırılacak
+        // rowCounter++;
+    }
+
+    // Fazla olan satırları sil
+    if (rowsToAdd < 0) {
+        for (let i = 0; i < Math.abs(rowsToAdd); i++) {
+            const rowToRemove = existingRows[existingRows.length - 1 - i]; // Son satırları seç
+            rowToRemove.remove(); // Sil
+        }
+    }
+
+}
+
+</script>
+
+<script>
+function updatePrice() {
+
+    const numRows = parseInt(document.getElementById('id_passenger_count').value); // Seçilen değeri al ve sayıya dönüştür
+    const price_input = document.getElementById('id_price');
+    const hidden_price = document.getElementById('id_hidden_price');
+    const hidden_currency = document.getElementById('id_hidden_currency');
+
+    const prices = JSON.parse('{{ prices|escapejs }}');
+    console.log(prices)
+
+    prices.forEach((price) => {
+      if (price.max_people === 0) {
+        price.max_people = 999999999
+      }
+      if (parseInt(price.min_people) <= numRows && numRows <= parseInt(price.max_people)) {
+        price_input.value = `${price.price} ${price.currency}`
+        hidden_price.value = price.price
+        hidden_currency.value = price.currency
+      }
+    })
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  updatePrice();
+});
+
+
+</script>
+
+{% endblock body %}

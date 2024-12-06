@@ -1,0 +1,184 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+
+<div class='container text-center'>
+        <br>
+        <br>
+        <br>
+        <br>
+        <h5>Yolculuk Bilgileri</h5>
+        <br>
+    {% comment %} <div class='row'>
+
+        <div class='col-lg-6'>
+            <table class='table'>
+                <thead>
+                    <tr>
+                        <th>Nereden (From)</th>
+                        <th>Nereye (To)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{job.location}}</td>
+                        <td>{{job.destination}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class='table'>
+                <thead>
+                    <tr>
+                        <th>Tarih (Date)</td>
+                        <th>Saat (Time)</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{job.date}}</td>
+                        <td>{{job.time}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            
+        </div>
+
+        <div class='col-lg-1'></div>
+
+        <div class='col-lg-5'>
+        
+
+            <table class='table'>
+            
+                <thead>
+                    <th>Ücret (Price)</td>
+                    </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>{{job.price}} {{job.currency}}</td>
+                    </tr>
+
+                    {% comment %} {% for passenger in passengers %}
+                        <tr>
+                        
+                            <td>{{passenger.name}}</td>
+                            <td>{{passenger.surname}}</td>
+                        </tr>
+                    
+                    {% endfor %}     
+                    
+                </tbody>
+            </table>
+
+            <table class='table'>
+                <thead>
+                    <tr>
+                        <th>Oluşturan (Created By)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{job.created_by}} - <b>{{job.created_by.userprofile.otel.name}}</b></td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+        
+        </div>
+    </div>
+
+    <div class='row'>
+
+        <h5>Yolcu Listesi ({{job.passenger_count}} Yolcu)</h5>
+    
+        <table class='table'>
+            <thead>
+                <tr>
+                    <th>İsim (Name)</th>
+                    <th>Soyisim (Surname)</th>
+                    t
+                </tr>
+            </thead>
+        </table>
+    </div> {% endcomment %}
+
+    <table class='table'>
+        <thead>
+            <tr>
+                <th>Nereden (From)</th>
+                <th>Nereye (To)</th>
+                <th>Tarih (Date)</th>
+                <th>Saat (Time)</th>
+                <th>Yolcu Sayısı (Passenger Count)</th>
+                <th>Ücret (Price)</th>
+                <th>Uçuş Kodu (Flight Code)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{job.location}}</td>
+                <td>{{job.destination}}</td>
+                <td>{{job.date}}</td>
+                <td>{{job.time}}</td>
+                <td>{{job.passenger_count}}</td>
+                <td>{{job.price}} {{job.currency}}</td>
+                <td>{{job.flight_code}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br><br>
+
+    <h5>Yolcu Bilgileri (Passenger Information)</h5>
+
+    <table class='table'>
+        <thead>
+            <tr>
+                <th>İsim (Name)</th>
+                <th>Soyisim (Surname)</th>
+                <th>Telefon Numarası (Phone)</th>
+                <th>Mail (Mail)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{job.name}}</td>
+                <td>{{job.surname}}</td>
+                {% if job.phone != None %}
+                    <td>{{job.phone}}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+
+                {% if job.mail != None %}
+                    <td>{{job.mail}}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+            </tr>
+            {% for passenger in passengers %}
+
+                <tr>
+                    <td>{{passenger.name}}</td>
+                    <td>{{passenger.surname}}</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href='#' class="btn btn-secondary" onclick="window.close();">Kapat/Vazgeç</a>
+
+
+</div>
+
+
+{% endblock body %}

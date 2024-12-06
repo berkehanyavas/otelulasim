@@ -1,0 +1,187 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+    <div class='container'>
+        <div class='row'>
+            <div class='col-lg-8'>
+                <h5>{{otel.name}}</h5>
+            </div>
+            <div class='col-lg-2'>
+                <a href="kullanici_ekle" class='btn btn-primary'>Kullanıcı Ekle</a>
+            </div>
+            <div class='col-lg-2'>
+                <a href="guncelle" class='btn btn-info'>Güncelle</a>
+            </div>
+        </div> 
+
+        <br>
+
+        <div class='row'>
+            <div class='col-lg-5'>
+                <table class='table' id='kullaniciListesi'>
+                    <thead>
+                        <tr>
+                            <th scope='col'>Kullanıcı Adı</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td>{{user.username}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class='col-lg-7'>
+                <br><br><br><br>
+                <table class='table'>
+                    <thead>
+                        <tr>
+                            <th scope='col'>Minimum Yolcu (Min. Passenger)</th>
+                            <th>Maksimum Yolcu (Max. Passenger)</th>
+                            <th>Fiyat (Price)</th>
+                            <th>Para Birimi (Currency)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for price in pricings %}
+                            <tr>
+                                <td>{{price.min_people}}</td>
+                                {% if price.max_people == 0 %}
+                                    <td>+</td>
+                                {% else %}
+                                    <td>{{price.max_people}}</td>
+                                {% endif %}
+                                <td>{{price.price}}</td>
+                                <td>{{price.currency}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br>
+
+        <h5>Yolculuk Listesi</h5>
+        <br>
+        <table class='table' id='yolculukListesi'>
+            <thead>
+                <tr>
+                    <th scope='col'>Yolcu Adı Soyadı</th>
+                    <th>Nereden (From)</th>
+                    <th>Nereye (To)</th>
+                    <th>Tarih (Date)</th>
+                    <th>Saat (Time)</th>
+                    <th>Yolcu Sayısı (Passenger Count)</th>
+                    <th>Ücret (Price)</th>
+                    <th>Oluşturan (Created By)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in jobs %}
+                    <tr>
+                        <td><a href="/job/{{job.id}}" onclick="window.open(this.href, '_blank', 'width=1080,height=730'); return false;">{{job.name}} {{job.surname}}</a></td>
+                        <td>{{job.location}}</td>
+                        <td>{{job.destination}}</td>
+                        <td>{{job.date}}</td>
+                        <td>{{job.time}}</td>
+                        <td>{{job.passenger_count}}</td>
+                        <td>{{job.price}} {{job.currency}}</td>
+                        <td>{{job.created_by}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th scope='col'>Yolcu Adı Soyadı</th>
+                    <th>Nereden (From)</th>
+                    <th>Nereye (To)</th>
+                    <th>Tarih (Date)</th>
+                    <th>Saat (Time)</th>
+                    <th>Yolcu Sayısı (Passenger Count)</th>
+                    <th>Ücret (Price)</th>
+                    <th>Oluşturan (Created By)</th>
+                </tr>
+            </tfoot>
+        </table>
+
+    </div>
+
+<script>
+$(document).ready(function() {
+    var table = $("#yolculukListesi").DataTable({
+        responsive: true,
+        lengthChange: true,
+        autoWidth: true,
+        dom: 'Blfrtip',  // 'B' butonları gösterecek
+        lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+        buttons: [
+            "copy",   // Kopyala butonu
+            "excel",  // Excel butonu
+            "print"   // Yazdır butonu
+        ],
+        initComplete: function () {
+            this.api()
+                .columns(5)
+                .every(function () {
+                    var column = this;
+                    var select = $('<select><option value="">Filtrelemek için seçiniz.</option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                            column.search(val ? '^' + val + '$' : '', true, false).draw();
+                        });
+                    column
+                        .data()
+                        .unique()
+                        .sort()
+                        .each(function (d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>');
+                        });
+                });
+            this.api()
+                .columns(7)
+                .every(function () {
+                    var column = this;
+                    var select = $('<select><option value="">Filtrelemek için seçiniz.</option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                            column.search(val ? '^' + val + '$' : '', true, false).draw();
+                        });
+                    column
+                        .data()
+                        .unique()
+                        .sort()
+                        .each(function (d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>');
+                        });
+                });
+        },
+    });
+
+    // Butonların konumunu ayarlayın
+    table.buttons().container().appendTo('#yolculukListesi_wrapper .col-md-6:eq(0)');
+});
+</script>
+
+<script>
+    $(document).ready(function() {
+        var table = $("#kullaniciListesi").DataTable({
+            responsive: true,
+            lengthChange: true,
+            autoWidth: true,
+            dom: 'lfrtip',
+            lengthMenu: [[5, 10, 25], [5, 10, 25]],
+        });
+
+        table.buttons().container().appendTo('#kullaniciListesi_wrapper .col-md-6:eq(0)');
+    });
+
+</script>
+
+
+{% endblock body %}

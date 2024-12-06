@@ -1,0 +1,213 @@
+{% extends "layout.html" %} 
+
+{% block body %} 
+
+{% load crispy_forms_tags %}
+{% load static %}
+
+<div class="row">
+  <div class="col-md-6 offset-md-3">
+    <h3>Otel Ekle</h3>
+    <br />
+    <form method="post">
+      {% csrf_token %} 
+      <div class="row">
+        <div id="div_id_name" class="form-group col-lg-6">
+          <label for="id_name" class="requiredField">
+            Otel Adı<span class="asteriskField">*</span>
+          </label>
+          <div>
+            <input
+              type="text"
+              name="name"
+              maxlength="80"
+              class="textinput form-control"
+              required
+              id="id_name"
+            />
+          </div>
+        </div>
+        <div id="div_id_phone" class="form-group col-lg-6">
+          <label for="id_phone" class="requiredField">
+            Telefon Numarası<span class="asteriskField">*</span>
+          </label>
+          <div>
+            <input
+              type="text"
+              name="phone"
+              value="+90"
+              maxlength="13"
+              class="textinput form-control"
+              required
+              id="id_phone"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div id='pricing_row' class="row">
+        <div id="div_id_min_people" class="form-group col-lg-2">
+          <label for="id_min_people" class="requiredField">
+            Min people<span class="asteriskField">*</span>
+          </label>
+          <div>
+            <input
+              type="number"
+              name="min_people"
+              min="0"
+              class="numberinput form-control"
+              required
+              id="id_min_people"
+              value=1
+              readonly
+              onchange='handleMinChange(this)'
+            />
+          </div>
+        </div>
+        <div id="div_id_max_people" class="form-group col-lg-2">
+          <label for="id_max_people" class="">
+            Max people<span id='max_span' class="asteriskField">*</span>
+          </label>
+          <div>
+            <input
+              type="number"
+              name="max_people"
+              min="0"
+              class="numberinput form-control"
+              id="id_max_people"
+              required
+              onchange='handleMaxChange(this)'
+            />
+          </div>
+        </div>
+
+        <div id="div_id_price" class="form-group col-lg-2">
+          <label for="id_price" class="requiredField">
+            Ücret (Price)<span class="asteriskField">*</span>
+          </label>
+          <div>
+            <input
+              type="number"
+              name="price"
+              step="0.01"
+              class="numberinput form-control"
+              required
+              id="id_price"
+            />
+          </div>
+        </div>
+        <div id="div_id_currency" class="form-group col-lg-2">
+          <label for="id_currency" class="requiredField">
+            Currency<span class="asteriskField">*</span>
+          </label>
+          <div>
+            <select
+              name="currency"
+              class="select form-control"
+              id="id_currency"
+            >
+              <option value="EUR" selected>EUR</option>
+              <option value="USD">USD</option>
+              <option value="TRY">TRY</option>
+            </select>
+          </div>
+        </div>
+
+        <div class='form-group col-lg-2'>
+          <label for='pricing_ekle' class='requiredField'>
+            Ekle
+          </label>
+          <div>
+            <button id='pricing_ekle' class='btn btn-success' onclick="addPricingRow(event)">Yeni Ekle</button>
+          </div>
+        </div>
+
+        <div id='div_sil_button' class='form-group col-lg-2' style='display:none;'>
+          <label for='pricing_sil' class='requiredField'>
+            Sil
+          </label>
+          <div>
+            <button id='pricing_sil' class='btn btn-danger' onclick="removePricingRow(event)">Sil</button>
+          </div>
+        </div>
+      </div>
+
+      <hr />
+
+      <div id="div_id_username" class="form-group">
+        <label for="id_username" class="requiredField">
+          Kullanıcı adı<span class="asteriskField">*</span>
+        </label>
+        <div>
+          <input
+            type="text"
+            name="username"
+            maxlength="150"
+            autofocus
+            class="textinput form-control"
+            required
+            aria-describedby="id_username_helptext"
+            id="id_username"
+          />
+          <small id="hint_id_username" class="form-text text-muted"
+            >Zorunlu. 150 karakter ya da daha az olmalı. Sadece harfler,
+            rakamlar ve @/./+/-/_ karakterleri kullanılabilir.</small
+          >
+        </div>
+      </div>
+
+      <div class="row">
+        <div id="div_id_password1" class="form-group col-lg-6">
+          <label for="id_password1" class="">
+            Parola<span class="asteriskField">*</span>
+          </label>
+          <div>
+            <input
+              type="password"
+              name="password1"
+              autocomplete="new-password"
+              class="passwordinput form-control"
+              aria-describedby="id_password1_helptext"
+              id="id_password1"
+            />
+            <small id="hint_id_password1" class="form-text text-muted"
+              ><ul>
+                <li>
+                  Parolanız diğer kişisel bilgileriniz ile çok benzer olamaz.
+                </li>
+                <li>Parolanız en az 8 karakter içermek zorundadır.</li>
+                <li>Parolanız yaygın olarak kullanılan bir parola olamaz.</li>
+                <li>Parolanız tamamıyla sayısal olamaz.</li>
+              </ul></small
+            >
+          </div>
+        </div>
+        <div id="div_id_password2" class="form-group col-lg-6">
+          <label for="id_password2" class="">
+            Parola onayı<span class="asteriskField">*</span>
+          </label>
+          <div>
+            <input
+              type="password"
+              name="password2"
+              autocomplete="new-password"
+              class="passwordinput form-control"
+              aria-describedby="id_password2_helptext"
+              id="id_password2"
+            />
+            <small id="hint_id_password2" class="form-text text-muted"
+              >Doğrulama için önceki gibi aynı parolayı girin.</small
+            >
+          </div>
+        </div>
+      </div>
+
+      <br />
+      <button type="submit" class="btn btn-primary">Ekle</button>
+    </form>
+  </div>
+</div>
+
+<script src='{% static "js/ekle_otel.js" %}'></script>
+
+{% endblock body %}
